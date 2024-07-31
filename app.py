@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import json
 import random
 import os
@@ -25,8 +25,8 @@ def load_json_file(filename):
         file = json.load(f)
     return file
 
-# Ubah nama file ke 'intents_LAA.json'
-filename = 'intents_LAA.json'
+# Ubah nama file ke 'intents.json'
+filename = 'intents.json'
 intents = load_json_file(filename)
 
 # Create a mapping from label names to numerical IDs for classification
@@ -84,7 +84,9 @@ def chat():
     if request.method == "POST":
         msg = request.form["msg"]
         user_input = msg.strip().lower()
-        return get_chat_response(user_input)
+        resp = get_chat_response(user_input)
+        print(resp)
+        return jsonify(resp)
     else:
         return "Metode GET tidak didukung."
     
