@@ -37,7 +37,7 @@
                                 <div class="message-data">
                                     <span class="message-data-time">Chatbot</span>
                                 </div>
-                                <div class="message my-message">Halo! Saya asisten virtual layanan akademik kampus Anda. Jangan ragu untuk bertanya, saya siap membantu Anda dengan informasi dan layanan akademik yang Anda butuhkan</div>
+                                <div class="message my-message typing message-container"></div>
                             </li>
                             <!-- Input & Response -->                           
                         </ul>
@@ -64,19 +64,19 @@
                 var chatHistory = $('#chat-history');
                 chatHistory.scrollTop(chatHistory[0].scrollHeight);
             }
-    
+      
             function observeMutations(element) {
                 var observer = new MutationObserver(scrollToBottom);
                 var config = { childList: true, subtree: true };
                 observer.observe(element[0], config);
             }
-    
+        
             function typeText(element, html, callback) {
                 let container = $('<div></div>');
                 container.html(html);
                 let elements = container.contents();
                 let currentIndex = 0;
-                        
+            
                 function typeElement() {
                     if (currentIndex < elements.length) {
                         let node = elements[currentIndex];
@@ -90,10 +90,10 @@
                                     let char = chars[currentCharIndex];
                                     element.append(document.createTextNode(char));
                                     currentCharIndex++;
-                                    setTimeout(typeChar, 50); // Delay antar karakter
+                                    setTimeout(typeChar, 30); // Delay antar karakter
                                 } else {
                                     currentIndex++;
-                                    setTimeout(typeElement, 50); // Delay antar elemen
+                                    setTimeout(typeElement, 30); // Delay antar elemen
                                 }
                             }
                         
@@ -102,11 +102,11 @@
                             let newElement = $(node).clone().empty().appendTo(element);
                             currentIndex++;
                             typeText(newElement, $(node).html(), function() {
-                                setTimeout(typeElement, 50); // Delay antar elemen
+                                setTimeout(typeElement, 30); // Delay antar elemen
                             });
                         } else {
                             currentIndex++;
-                            setTimeout(typeElement, 50); // Delay antar elemen
+                            setTimeout(typeElement, 30); // Delay antar elemen
                         }
                     } else {
                         if (callback) callback();
@@ -115,15 +115,27 @@
             
                 typeElement();
             }
-    
+        
+            function typeInitialMessage() {
+                var initialMessageHtml = 'Halo! Saya asisten virtual layanan akademik kampus Anda. Jangan ragu untuk bertanya, saya siap membantu Anda dengan informasi dan layanan akademik yang Anda butuhkan';
+                var messageElement = $('#messageFormeight > li:first-child .my-message');
+                typeText(messageElement, initialMessageHtml, function() {
+                    messageElement.removeClass('typing');
+                    scrollToBottom();
+                });
+            }
+        
+            // Call the function to type the initial message
+            typeInitialMessage();
+        
             $("#messageArea").on("submit", function(event) {
                 event.preventDefault();
                 var rawText = $("#text").val();
                 var userHtml = '<li class="clearfix" style="list-style: none; margin-bottom: 30px; margin-left: 0;"><div class="message-data text-right"><span class="message-data-time">Kamu</span></div><div class="message other-message float-right">' + rawText + '</div></li>';
-    
+            
                 $("#messageFormeight").append(userHtml);
                 scrollToBottom();
-    
+            
                 $.ajax({
                     data: {
                         msg: rawText,
@@ -135,15 +147,15 @@
                     var botMessageElement = $($.parseHTML(botHtml));
                     $("#messageFormeight").append(botMessageElement);
                     scrollToBottom();
-    
+                
                     observeMutations(botMessageElement.find('.my-message'));
-    
+                
                     typeText(botMessageElement.find('.my-message'), data, function() {
                         botMessageElement.find('.my-message').removeClass('typing');
                         scrollToBottom();
                     });
                 });
-    
+            
                 $("#text").val(''); // Clear the input field
             });
         });

@@ -26,7 +26,7 @@ def load_json_file(filename):
     return file
 
 # Ubah nama file ke 'intents.json'
-filename = 'intents.json'
+filename = 'intents_LAA.json'
 intents = load_json_file(filename)
 
 # Create a mapping from label names to numerical IDs for classification
@@ -39,7 +39,7 @@ label2id = {'Greetings': 0,
  'Hasil Sidang Yudisium': 6,
  'Waktu Pendaftaran Yudisium': 7,
  'Yudisium Pending': 8,
- 'Pengajuan Cek Similarity': 9,
+ 'Pengajuan Similarity': 9,
  'Hasil Cek Similarity': 10,
  'Batas Maksimum Similarity': 11,
  'Similarity Score Lebih dari 20%': 12,
@@ -69,11 +69,19 @@ label2id = {'Greetings': 0,
  'Jumlah Cuti': 36,
  'Pengajuan Undur Diri': 37,
  'Batas Pengajuan Undur Diri': 38,
- 'Kalender_Akademik': 39,
- 'Pedoman_Akademik': 40,
- 'Ijazah': 41,
- 'Transkrip_Digital': 42,
- 'goodbye': 43}
+ 'Kalender Akademik': 39,
+ 'Pedoman Akademik': 40,
+ 'Ijazah dan transkrip digital': 41,
+ 'basila': 42,
+ 'wisuda': 43,
+ 'ijazah': 44,
+ 'proposal TA': 45,
+ 'grup kelas': 46,
+ 'jadwal kuliah': 47,
+ 'praktikum': 48,
+ 'Dosen Terlambat': 49,
+ 'Kontak Dosen': 50,
+ 'goodbye': 51}
 
 @app.route("/")
 def index():
@@ -85,7 +93,6 @@ def chat():
         msg = request.form["msg"]
         user_input = msg.strip().lower()
         resp = get_chat_response(user_input)
-        print(resp)
         return jsonify(resp)
     else:
         return "Metode GET tidak didukung."
